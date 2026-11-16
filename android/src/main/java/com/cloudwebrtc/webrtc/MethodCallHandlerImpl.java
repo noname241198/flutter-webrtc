@@ -2261,7 +2261,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
     } else {
       Log.d(TAG, "peerConnectionDispose() peerConnectionObserver is null");
     }
-    if (mPeerConnectionObservers.size() == 0) {
+    // hoot: 在室中（keepActiveWithoutPeers）はピアが0個になっても通話モードを保つ
+    if (mPeerConnectionObservers.size() == 0 && !AudioSwitchManager.isKeepActiveWithoutPeers()) {
       AudioSwitchManager.instance.stop();
     }
   }

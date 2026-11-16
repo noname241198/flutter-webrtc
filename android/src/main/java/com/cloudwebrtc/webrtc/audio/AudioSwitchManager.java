@@ -63,6 +63,23 @@ public class AudioSwitchManager {
     private static boolean audioSessionManagementEnabled = true;
 
     /**
+     * hoot: true の間は、PeerConnection が0個になっても stop()（deactivate）しない。
+     * 通話の在室中に相手が全員抜けて1人になったとき、MODE_NORMAL に戻すと、
+     * 次の入室時のスピーカー再選択（setSpeakerphoneOn）で Galaxy 等が再生中のメディア
+     * （読み上げ・効果音）をミュートするため、在室中は通話モードを保つ。
+     * アプリ側が在室開始で true、退室で false にし、退室時は自分で stop() を呼ぶ。
+     */
+    private static volatile boolean keepActiveWithoutPeers = false;
+
+    public static void setKeepActiveWithoutPeers(boolean keep) {
+        keepActiveWithoutPeers = keep;
+    }
+
+    public static boolean isKeepActiveWithoutPeers() {
+        return keepActiveWithoutPeers;
+    }
+
+    /**
      * When true, AudioSwitchManager will request audio focus on start and abandon on stop.
      * <br />
      * Defaults to true.
